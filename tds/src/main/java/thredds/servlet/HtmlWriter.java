@@ -509,6 +509,28 @@ public class HtmlWriter {
   }
 
   /**
+   * Write html data to the HttpServletResponse, return the size in bytes of written html to the response.
+   *
+   * @param req the HttpServletRequest
+   * @param res the HttpServletResponse.
+   * @param html the html to write to the HttpServletResponse.
+   * @return the size in bytes of the catalog written to the HttpServletResponse.
+   * @throws IOException if problems writing the response.
+   */
+  public int writeHTML(HttpServletRequest req, HttpServletResponse res, String html)
+      throws IOException {
+    res.setContentLength(html.length());
+    res.setContentType("text/html; charset=UTF-8");
+    if ( ! req.getMethod().equals( "HEAD" ) )
+    {
+      PrintWriter writer = res.getWriter();
+      writer.write(html);
+      writer.flush();
+    }
+    return html.length();
+  }
+
+  /**
    * Write an InvCatalogImpl to the HttpServletResponse, return the size in bytes of the catalog writtn to the response.
    *
    * @param req the HttpServletRequest
@@ -521,17 +543,7 @@ public class HtmlWriter {
   public int writeCatalog(HttpServletRequest req, HttpServletResponse res, InvCatalogImpl cat, boolean isLocalCatalog)
       throws IOException {
     String catHtmlAsString = convertCatalogToHtml(cat, isLocalCatalog);
-
-    res.setContentLength(catHtmlAsString.length());
-    res.setContentType("text/html; charset=UTF-8");
-    if ( ! req.getMethod().equals( "HEAD" ) )
-    {
-      PrintWriter writer = res.getWriter();
-      writer.write(catHtmlAsString);
-      writer.flush();
-    }
-
-    return catHtmlAsString.length();
+    return writeHTML(req,res,catHtmlAsString);
   }
 
   /**

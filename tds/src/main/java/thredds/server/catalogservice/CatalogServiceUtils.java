@@ -82,7 +82,7 @@ public class CatalogServiceUtils
     // Bind and validate the request to a LocalCatalogRequest.
     LocalCatalogRequest rcr = new LocalCatalogRequest();
     LocalCatalogRequestDataBinder db = new LocalCatalogRequestDataBinder( rcr, "request" );
-    db.setAllowedFields( new String[]{"path", "command", "dataset"} );
+    db.setAllowedFields( new String[]{"path", "command", "dataset", "format"} );
     db.bind( request );
 
     BindingResult bindingResult = db.getBindingResult();

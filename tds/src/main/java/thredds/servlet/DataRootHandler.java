@@ -111,6 +111,7 @@ public class DataRootHandler {
     return singleton;
   }
 
+
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   private final TdsContext tdsContext;
   private boolean staticCache;
@@ -1881,6 +1882,7 @@ public class DataRootHandler {
       public void doAction(DebugHandler.Event e) {
         try {
           singleton.reinit();
+          database.reinit();
           e.pw.println("reinit ok");
 
         } catch (Exception e1) {

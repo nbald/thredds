@@ -40,5 +40,5 @@ package thredds.server.catalogservice;
 */
 public enum Command
 {
-  SHOW, SUBSET, VALIDATE;
+  SHOW, SUBSET, VALIDATE, DATABASE;
 }

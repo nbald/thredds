@@ -46,6 +46,7 @@ public class LocalCatalogRequest
   private String path;
   private Command command;
   private String dataset;
+  private String format;
 
   public String getPath() { return path; }
   public void setPath( String path ) { this.path = path; }
@@ -55,4 +56,7 @@ public class LocalCatalogRequest
 
   public String getDataset() { return dataset; }
   public void setDataset( String dataset ) { this.dataset = dataset; }
+
+  public String getFormat() { return format; }
+  public void setFormat( String database ) { this.format = format; }
 }

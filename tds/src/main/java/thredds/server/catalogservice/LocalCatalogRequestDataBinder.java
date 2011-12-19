@@ -39,6 +39,8 @@ import javax.servlet.http.HttpServletRequest;
 
 import thredds.util.TdsPathUtils;
 
+import java.util.Arrays;
+
 /**
  * Binds an HttpServletRequest to a {@link LocalCatalogRequest} command object.
  *
@@ -51,13 +53,17 @@ import thredds.util.TdsPathUtils;
  */
 public class LocalCatalogRequestDataBinder extends DataBinder
 {
+  static private String[] legalcommands = new String[]{"show","subset","database","validate"};
+  static private String[] legalformats = new String[]{"html","xml"};
+
   private String suffixForDirPath = "catalog.html";
 
   private static enum FieldInfo
   {
     CATALOG( "catalog", "path", ""),
     COMMAND( "command", "command", "" ),
-    DATASET( "dataset", "dataset", "" );
+    DATASET( "dataset", "dataset", "" ),
+    FORMAT( "format", "format", "html" );
 
     private String parameterName;
     private String propertyName;
@@ -83,9 +89,10 @@ public class LocalCatalogRequestDataBinder extends DataBinder
 
   public void bind( HttpServletRequest req)
   {
-    String catPath = TdsPathUtils.extractPath( req );
+    String catPath = TdsPathUtils.extractPath(req);
     String command = req.getParameter( FieldInfo.COMMAND.getParameterName() );
     String dataset = req.getParameter( FieldInfo.DATASET.getParameterName() );
+    String format = req.getParameter( FieldInfo.FORMAT.getParameterName() );
 
     MutablePropertyValues values = new MutablePropertyValues();
 
@@ -98,16 +105,24 @@ public class LocalCatalogRequestDataBinder extends DataBinder
 
     // Don't allow null dataset ID values.
     if ( dataset == null )
-      dataset = FieldInfo.DATASET.getDefaultValue();
+        dataset = FieldInfo.DATASET.getDefaultValue();
 
-    // Default to SUBSET if a dataset ID is given, otherwise, SHOW.
-    if ( command == null  )
+    // Check for legal command
+    if(command != null &&  Arrays.binarySearch(legalcommands,command) < 0)
+        command = FieldInfo.COMMAND.getDefaultValue();
+
+    // Default to SUBSET if a dataset ID is given, otherwise, SHOW
+    if ( command == null)
       command = dataset.equals( FieldInfo.DATASET.getDefaultValue())
                 ? Command.SHOW.name() : Command.SUBSET.name();
+
+      if(format == null || Arrays.binarySearch(legalformats,format) < 0)
+          format = FieldInfo.FORMAT.getDefaultValue();
 
     values.addPropertyValue( FieldInfo.CATALOG.getPropertyName(), catPath );
     values.addPropertyValue( FieldInfo.COMMAND.getPropertyName(), command );
     values.addPropertyValue( FieldInfo.DATASET.getPropertyName(), dataset );
+    values.addPropertyValue( FieldInfo.FORMAT.getPropertyName(), format );
 
     super.bind( values );
   }

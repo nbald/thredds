@@ -41,15 +41,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.ServletException;
 
+import thredds.catalog.*;
 import thredds.catalog.util.DeepCopyUtils;
 import thredds.servlet.DataRootHandler;
+import thredds.servlet.Database;
 import thredds.servlet.HtmlWriter;
 import thredds.servlet.UsageLog;
 import thredds.server.config.TdsContext;
-import thredds.catalog.InvCatalog;
-import thredds.catalog.InvCatalogImpl;
-import thredds.catalog.InvDatasetImpl;
-import thredds.catalog.InvDataset;
 import thredds.util.RequestForwardUtils;
 
 import java.io.File;
@@ -209,7 +207,9 @@ public class LocalCatalogServiceController extends AbstractController
         return handlePublicDocumentRequest( request, response, path );
 
       // Otherwise, handle catalog as indicated by "command".
-      if ( catalogServiceRequest.getCommand().equals( Command.SHOW))
+      switch (catalogServiceRequest.getCommand()) {
+
+      case SHOW:
       {
         if ( this.htmlView )
         {
@@ -220,8 +220,9 @@ public class LocalCatalogServiceController extends AbstractController
         }
         else
           return new ModelAndView( "threddsInvCatXmlView", "catalog", catalog );
-      }
-      else if ( catalogServiceRequest.getCommand().equals( Command.SUBSET ))
+      } break;
+
+      case SUBSET:
       {
         String datasetId = catalogServiceRequest.getDataset();
         InvDataset dataset = catalog.findDatasetByID( datasetId );
@@ -245,17 +246,35 @@ public class LocalCatalogServiceController extends AbstractController
           InvCatalog subsetCat = DeepCopyUtils.subsetCatalogOnDataset( catalog, dataset );
           return new ModelAndView( "threddsInvCatXmlView", "catalog", subsetCat );
         }
-      }
-      else
+      } break;
+
+      case DATABASE:
+      {
+          Database database = new Database(catalog);
+          database.fill();
+          String relation = null;
+          if(catalogServiceRequest.getFormat().equals("html"))
+          {
+              relation = database.getHTML();
+          } else {//if(catalogServiceRequest.getFormat().equals("xml"))
+              relation = database.getXML();
+          }
+          int i = this.htmlWriter.writeHTML( request, response, relation);
+          log.info( "handleRequestInternal(): " + UsageLog.closingMessageForRequestContext( HttpServletResponse.SC_OK, i ) );
+          return null;
+      } break;
+
+      default:
       {
         String msg = "Unsupported request command [" + catalogServiceRequest.getCommand() + "].";
         log.error( "handleRequestInternal(): " + msg + " -- NOTE: Should have been caught on input validation." );
         log.info( "handleRequestInternal(): " + UsageLog.closingMessageForRequestContext( HttpServletResponse.SC_BAD_REQUEST, msg.length()));
         response.sendError( HttpServletResponse.SC_BAD_REQUEST, msg.toString() );
         return null;
+      } break;
+
       }
-    }
-    catch ( IOException e )
+    } catch ( IOException e )
     {
       log.error( "handleRequestInternal(): Trouble writing to response.", e);
       log.info( "handleRequestInternal(): " + UsageLog.closingMessageForRequestContext( HttpServletResponse.SC_BAD_REQUEST, -1 ) );
