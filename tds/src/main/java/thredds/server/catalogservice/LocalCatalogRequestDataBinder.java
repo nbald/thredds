@@ -53,7 +53,6 @@ import java.util.Arrays;
  */
 public class LocalCatalogRequestDataBinder extends DataBinder
 {
-  static private String[] legalcommands = new String[]{"show","subset","database","validate"};
   static private String[] legalformats = new String[]{"html","xml"};
 
   private String suffixForDirPath = "catalog.html";
@@ -107,17 +106,29 @@ public class LocalCatalogRequestDataBinder extends DataBinder
     if ( dataset == null )
         dataset = FieldInfo.DATASET.getDefaultValue();
 
-    // Check for legal command
-    if(command != null &&  Arrays.binarySearch(legalcommands,command) < 0)
-        command = FieldInfo.COMMAND.getDefaultValue();
-
     // Default to SUBSET if a dataset ID is given, otherwise, SHOW
     if ( command == null)
       command = dataset.equals( FieldInfo.DATASET.getDefaultValue())
                 ? Command.SHOW.name() : Command.SUBSET.name();
 
-      if(format == null || Arrays.binarySearch(legalformats,format) < 0)
-          format = FieldInfo.FORMAT.getDefaultValue();
+    // Check for legal command
+    boolean legal = false;
+    if(command != null) {
+        for(Command cmd: Command.values()) {
+            if(cmd.toString().equalsIgnoreCase(command)) {legal = true; break;}
+        }
+    }
+    if(!legal)
+        command = FieldInfo.COMMAND.getDefaultValue();
+
+    legal = false;
+    if(format != null) {
+        for(String s: legalformats) {
+            if(s.equalsIgnoreCase(format)) {legal = true; break;}
+        }
+    }
+    if(!legal)
+        format = FieldInfo.FORMAT.getDefaultValue();
 
     values.addPropertyValue( FieldInfo.CATALOG.getPropertyName(), catPath );
     values.addPropertyValue( FieldInfo.COMMAND.getPropertyName(), command );

@@ -220,7 +220,7 @@ public class LocalCatalogServiceController extends AbstractController
         }
         else
           return new ModelAndView( "threddsInvCatXmlView", "catalog", catalog );
-      } break;
+      }
 
       case SUBSET:
       {
@@ -246,12 +246,12 @@ public class LocalCatalogServiceController extends AbstractController
           InvCatalog subsetCat = DeepCopyUtils.subsetCatalogOnDataset( catalog, dataset );
           return new ModelAndView( "threddsInvCatXmlView", "catalog", subsetCat );
         }
-      } break;
+      }
 
       case DATABASE:
       {
           Database database = new Database(catalog);
-          database.fill();
+          database.walk();
           String relation = null;
           if(catalogServiceRequest.getFormat().equals("html"))
           {
@@ -262,7 +262,7 @@ public class LocalCatalogServiceController extends AbstractController
           int i = this.htmlWriter.writeHTML( request, response, relation);
           log.info( "handleRequestInternal(): " + UsageLog.closingMessageForRequestContext( HttpServletResponse.SC_OK, i ) );
           return null;
-      } break;
+      }
 
       default:
       {
@@ -271,10 +271,10 @@ public class LocalCatalogServiceController extends AbstractController
         log.info( "handleRequestInternal(): " + UsageLog.closingMessageForRequestContext( HttpServletResponse.SC_BAD_REQUEST, msg.length()));
         response.sendError( HttpServletResponse.SC_BAD_REQUEST, msg.toString() );
         return null;
-      } break;
+      }
 
       }
-    } catch ( IOException e )
+    } catch ( Exception e )
     {
       log.error( "handleRequestInternal(): Trouble writing to response.", e);
       log.info( "handleRequestInternal(): " + UsageLog.closingMessageForRequestContext( HttpServletResponse.SC_BAD_REQUEST, -1 ) );

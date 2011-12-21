@@ -96,7 +96,11 @@ public class CatalogServiceFilter
     HttpServletRequest request = (HttpServletRequest) servletRequest;
     HttpServletResponse response = (HttpServletResponse) servletResponse;
 
-    String[] cmdValidSet = { Command.SHOW.toString(), Command.SUBSET.toString(), Command.VALIDATE.toString()};
+    // Changed so that it automatically picks up all the elements of the Command enum
+    int l = Command.values().length;
+    String[] cmdValidSet = new String[l];
+    for(Command cmd: Command.values())
+        cmdValidSet[--l] = cmd.toString();
 
     if ( ParameterValidationUtils.validateParameterAsSingleValueUriString( request, response, "catalog" )
          && ParameterValidationUtils.validateParameterAsSingleValueAlphanumericStringConstrained( request, response, "command", cmdValidSet, true )

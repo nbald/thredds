@@ -1882,7 +1882,6 @@ public class DataRootHandler {
       public void doAction(DebugHandler.Event e) {
         try {
           singleton.reinit();
-          database.reinit();
           e.pw.println("reinit ok");
 
         } catch (Exception e1) {

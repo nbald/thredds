@@ -36,6 +36,7 @@ package thredds.servlet;
 import thredds.catalog.*;
 import ucar.nc2.constants.FeatureType;
 
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
@@ -88,6 +89,7 @@ public class Database
             if(o == null) throw new NullPointerException();
             Node t = (Node)o;
             int relation = id.compareTo(t.id);
+            return relation;
         }
 
         // toString produces a simple string representation
@@ -120,6 +122,7 @@ public class Database
     // Instance variables
 
     InvCatalog catalog = null;
+    Node root = null;
 
     //////////////////////////////////////////////////
     // Constructor(s)
@@ -143,7 +146,7 @@ public class Database
  
     public void walk()
     {
-       Node root = new Node(true);
+       root = new Node(true);
        List<InvDataset> datasets = catalog.getDatasets();
        walkr(root,datasets);
     }
@@ -180,35 +183,56 @@ public class Database
      */
     public String getHTML()
     {
-        StringWriter out = new StringWriter();
-        PrintWriter pw = new PrintWriter(out);
-        // generate leader
-        pw.println("<html>");
+        try {
+            Printer out = new Printer();
+            // generate leader
+            out.println("<html>");
+            out.println("<body>");
+            out.println("<table border=\"1\">");
+            out.println("<tr><th>ID<th>Name<th>Collection<br>Type<th>Feature<br>Type<th>DataFormat<br>Type<th>Variables<th>Parent ID");
+            Node parent = null;
+            for(Node node: root.datasets) {
+                htmlwalk(node,out);
+            }
+            out.println("</table>");
+            out.println("</body>");
+            out.println("</html>");
+            out.close();
+            return out.getWriter().toString();
+        } catch (Exception e) {
+            return "Error: "+e.toString();
+        }
     }
 
     // toString produces a simple string representation
-    void htmlwalk(dataset dataset, StringBuilder out)
+    void htmlwalk(Node node, Printer out)
+        throws IOException
     {
-        StringBuilder line = new StringBuilder();
-        line.append("{");
-        line.append(id);
-        line.append("|");
-        line.append(name);
-        line.append("|");
-        line.append(parent);
-        line.append("|");
-        line.append(collectionType.toString());
-        line.append("|");
-        line.append(dataType.toString());
-        line.append("|");
-        line.append(dataFormatType.toString());
-        line.append("|");
-        for(int i=0;i<variables.size();i++) {
-            if(i > 0) line.append(",");
-            line.append(variables.get(i).toString());
+        htmlrow(node,out);
+        for(Node subnode: root.datasets) {
+            htmlwalk(subnode,out);
         }
-        line.append("}");
-        return line.toString();
+    }
+
+    void htmlrow(Node node, Printer out)
+            throws IOException
+    {
+        out.println("<tr><th>ID<th>Name<th>Collection<br>Type<th>Feature<br>Type<th>DataFormat<br>Type<th>Variables<th>Parent ID");
+        out.println("<tr valign=\"top\">");
+        out.indent();
+        out.println("<td>"+node.id);
+        out.println("<td>"+node.name);
+        out.println("<td>"+node.collectionType);
+        out.println("<td>"+node.dataType);
+        out.println("<td>"+node.dataFormatType);
+        boolean first = true;
+        for(ThreddsMetadata.Variables var: node.variables) {
+           if(!first) out.print(";");
+           out.print(var.toString());
+        }
+        out.blankline();
+        out.println("<td>"+(node.parent != null?node.parent.id:""));
+        out.outdent();
     }
 
     /**
