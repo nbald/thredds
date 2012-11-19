@@ -68,7 +68,7 @@ import javax.net.ssl.X509TrustManager;
 public class EasyX509TrustManager implements X509TrustManager {
   private X509TrustManager standardTrustManager = null;
 
-  static public org.slf4j.Logger logger = HTTPSession.log;
+  static public org.slf4j.Logger logger = HTTPSession.getLogger();
 
   /**
    * Constructor for EasyX509TrustManager.

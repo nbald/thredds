@@ -51,6 +51,7 @@ import opendap.servers.*;
 import opendap.dap.parsers.ParseException;
 import opendap.servlet.*;
 import opendap.util.Debug;
+import org.slf4j.Logger;
 import ucar.nc2.util.net.EscapeStrings;
 
 /**
@@ -208,8 +209,12 @@ import ucar.nc2.util.net.EscapeStrings;
 
 public class DTSServlet extends AbstractServlet
 {
-  static public org.slf4j.Logger log
-             = org.slf4j.LoggerFactory.getLogger(DTSServlet.class);
+  static private org.slf4j.Logger log = null;
+
+  static {
+	AbstractServlet.setLogger(opendap.dts.DTSServlet.class);
+        log = AbstractServlet.getLogger();
+  };
 
   // Class variables
   static final String DEFAULTCONTEXTPATH = "/dts";
@@ -355,7 +360,6 @@ public class DTSServlet extends AbstractServlet
    public void init() throws ServletException
    {
     super.init();
-    setLog(DTSLog.class);
     log.debug("**************** DTS INIT ***********************");
 
     // debugging

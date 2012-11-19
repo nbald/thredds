@@ -194,9 +194,9 @@ public class testEngine {
             IOException {
 
 
-        if (_Debug) DTSServlet.log.debug("testEngine.newLoadTestArray(" + datasetName + "): ");
+        if (_Debug) DTSServlet.getLogger().debug("testEngine.newLoadTestArray(" + datasetName + "): ");
         try {
-            if (_Debug) DTSServlet.log.debug("Loading: " +
+            if (_Debug) DTSServlet.getLogger().debug("Loading: " +
                     ta.getEncodedName() +
                     " an SDArray of " +
                     ta.numDimensions() +
@@ -206,12 +206,12 @@ public class testEngine {
 
             if (_Debug) {
                 Class cl = pv.getClass();
-                DTSServlet.log.debug("PrimitiveVector is a: " + cl.getName());
+                DTSServlet.getLogger().debug("PrimitiveVector is a: " + cl.getName());
             }
 
 
             pv.setLength(getLength(ta, 0, true));
-            if (_Debug) DTSServlet.log.debug("Length: " + pv.getLength());
+            if (_Debug) DTSServlet.getLogger().debug("Length: " + pv.getLength());
 
             newLoadArray(datasetName, ta);
 
@@ -220,7 +220,7 @@ public class testEngine {
         catch (DAP2Exception e) {
             // Don't bother to do a thing.
         }
-        if (_Debug) DTSServlet.log.debug("---------------------------------------------------");
+        if (_Debug) DTSServlet.getLogger().debug("---------------------------------------------------");
 
 
     }
@@ -239,7 +239,7 @@ public class testEngine {
         int sizeofThisDim;
 
         if (constrained) {
-            if (_Debug) DTSServlet.log.debug("Scanning Dimension " + dim +
+            if (_Debug) DTSServlet.getLogger().debug("Scanning Dimension " + dim +
                     "  start: " + dad.getStart() +
                     "  stop: " + dad.getStop() +
                     "  stride: " + dad.getStride());
@@ -251,7 +251,7 @@ public class testEngine {
 
         int eCount = sizeofThisDim * sizeofOtherDims;
 
-        if (_Debug) DTSServlet.log.debug("  length: " + sizeofThisDim);
+        if (_Debug) DTSServlet.getLogger().debug("  length: " + sizeofThisDim);
 
         return (eCount);
     }
@@ -268,7 +268,7 @@ public class testEngine {
         int uDimSteps[] = new int[ta.numDimensions()];
 
 
-        if (_Debug) DTSServlet.log.debug("ConstrainedIndex: " + constrainedIndex);
+        if (_Debug) DTSServlet.getLogger().debug("ConstrainedIndex: " + constrainedIndex);
 
 
         dim = ta.numDimensions() - 1;
@@ -281,18 +281,18 @@ public class testEngine {
         }
 
         if (_Debug) {
-            DTSServlet.log.debug("DimSteps: ");
+            DTSServlet.getLogger().debug("DimSteps: ");
             for (dim = 0; dim < ta.numDimensions(); dim++) {
-                DTSServlet.log.debug("    cDimSteps[" + dim + "]: " + cDimSteps[dim]);
+                DTSServlet.getLogger().debug("    cDimSteps[" + dim + "]: " + cDimSteps[dim]);
             }
-            DTSServlet.log.debug("");
+            DTSServlet.getLogger().debug("");
             for (dim = 0; dim < ta.numDimensions(); dim++) {
-                DTSServlet.log.debug("    uDimSteps[" + dim + "]: " + uDimSteps[dim]);
+                DTSServlet.getLogger().debug("    uDimSteps[" + dim + "]: " + uDimSteps[dim]);
             }
         }
 
 
-        if (_Debug) DTSServlet.log.debug("cIndices: ");
+        if (_Debug) DTSServlet.getLogger().debug("cIndices: ");
 
         k = 0;
         for (dim = 0; dim < (ta.numDimensions() - 1); dim++) {
@@ -301,23 +301,23 @@ public class testEngine {
 
             cIndices[dim] = (constrainedIndex - k) / cDimSteps[dim];
 
-            if (_Debug) DTSServlet.log.debug("cIndices[" + dim + "]: " + cIndices[dim] + "  k: " + k);
+            if (_Debug) DTSServlet.getLogger().debug("cIndices[" + dim + "]: " + cIndices[dim] + "  k: " + k);
 
             k += cIndices[dim] * cDimSteps[dim];
 
         }
 
         cIndices[dim] = (constrainedIndex - k);
-        if (_Debug) DTSServlet.log.debug("cIndices[" + dim + "]: " + cIndices[dim] + "  k: " + k);
+        if (_Debug) DTSServlet.getLogger().debug("cIndices[" + dim + "]: " + cIndices[dim] + "  k: " + k);
 
 
-        if (_Debug) DTSServlet.log.debug("uIndices: (");
+        if (_Debug) DTSServlet.getLogger().debug("uIndices: (");
         for (dim = 0; dim < ta.numDimensions(); dim++) {
             dad = ta.getDimension(dim);
             uIndices[dim] = dad.getStart() + cIndices[dim] * dad.getStride();
-            if (_Debug) DTSServlet.log.debug(uIndices[dim] + ", ");
+            if (_Debug) DTSServlet.getLogger().debug(uIndices[dim] + ", ");
         }
-        if (_Debug) DTSServlet.log.debug(")");
+        if (_Debug) DTSServlet.getLogger().debug(")");
 
         uI = 0;
         for (dim = 0; dim < ta.numDimensions(); dim++) {
@@ -335,15 +335,15 @@ public class testEngine {
 
         PrimitiveVector pv = ta.getPrimitiveVector();
 
-        if (_Debug) DTSServlet.log.debug("Loading Array... ");
+        if (_Debug) DTSServlet.getLogger().debug("Loading Array... ");
 
         for (int j = 0; j < pv.getLength(); j++) {
-            if (_Debug) DTSServlet.log.debug("..\n");
+            if (_Debug) DTSServlet.getLogger().debug("..\n");
 
 
             int i = nuAI(j, ta);
 
-            if (_Debug) DTSServlet.log.debug("ConstrainedIndex: " + j + "   UnconstrainedIndex: " + i);
+            if (_Debug) DTSServlet.getLogger().debug("ConstrainedIndex: " + j + "   UnconstrainedIndex: " + i);
 
             if (pv instanceof BaseTypePrimitiveVector) {
 

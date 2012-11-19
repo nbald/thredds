@@ -62,8 +62,9 @@ class HTTPAuthStore implements Serializable
 
 
 //////////////////////////////////////////////////////////////////////////
-static public org.slf4j.Logger log
-                = org.slf4j.LoggerFactory.getLogger(HTTPSession.class);
+
+static public org.slf4j.Logger log = HTTPSession.getLogger();
+
 //////////////////////////////////////////////////////////////////////////
 
 

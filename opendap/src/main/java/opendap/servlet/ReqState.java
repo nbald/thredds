@@ -139,10 +139,10 @@ public class ReqState {
         this.myServletContext = sv.getServletContext();
         this.rootpath = HTTPSession.canonicalpath(this.myServletContext.getRealPath("/"));
         if(this.rootpath == null) {
-            AbstractServlet.log.error("ReqState: cannot locate dts root path");
+            AbstractServlet.getLogger().error("ReqState: cannot locate dts root path");
             this.rootpath = "";
         }
-        AbstractServlet.log.debug("RootPath: "+this.rootpath);
+        AbstractServlet.getLogger().debug("RootPath: "+this.rootpath);
 
         this.myHttpRequest = myRequest;
         this.response = response;
@@ -153,7 +153,7 @@ public class ReqState {
         if (this.CE == null) this.CE = "";
 
         processDodsURL();
-        AbstractServlet.log.debug("datasetname=|"+this.dataSetName+"|");
+        AbstractServlet.getLogger().debug("datasetname=|"+this.dataSetName+"|");
 
         defaultDDXcache  = rootpath + testdatasetspath + "/ddx";
         defaultDDScache  = rootpath + testdatasetspath + "/dds";
@@ -455,10 +455,10 @@ public class ReqState {
         String path2 = myHttpRequest.getServletPath();
         String path3 = myHttpRequest.getRequestURI();
         String path4 = myHttpRequest.getPathInfo();
-        AbstractServlet.log.debug("cxt="+path1);
-        AbstractServlet.log.debug("sv="+path2);
-        AbstractServlet.log.debug("url="+path3);
-        AbstractServlet.log.debug("path="+path4);
+        AbstractServlet.getLogger().debug("cxt="+path1);
+        AbstractServlet.getLogger().debug("sv="+path2);
+        AbstractServlet.getLogger().debug("url="+path3);
+        AbstractServlet.getLogger().debug("path="+path4);
 
         this.dataSetName = HTTPSession.canonicalpath(myHttpRequest.getPathInfo());
         String cxtpath = HTTPSession.canonicalpath(myHttpRequest.getContextPath());
@@ -484,7 +484,7 @@ public class ReqState {
 	    }
         }
 
-        AbstractServlet.log.debug("this.datasetname.1="+this.dataSetName);
+        AbstractServlet.getLogger().debug("this.datasetname.1="+this.dataSetName);
 
         this.requestSuffix = null;
         if (this.dataSetName != null) {
@@ -516,7 +516,7 @@ public class ReqState {
                 }
             }
         }
-        AbstractServlet.log.debug("this.datasetname.2="+this.dataSetName);
+        AbstractServlet.getLogger().debug("this.datasetname.2="+this.dataSetName);
     }
 
     /**

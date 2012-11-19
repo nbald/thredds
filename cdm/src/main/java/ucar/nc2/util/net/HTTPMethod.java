@@ -58,7 +58,8 @@ import org.apache.commons.httpclient.protocol.Protocol;
 public class HTTPMethod
 {
 //////////////////////////////////////////////////////////////////////////
-static public org.slf4j.Logger log = HTTPSession.log;
+
+static public org.slf4j.Logger log = HTTPSession.getLogger();
 
 //////////////////////////////////////////////////////////////////////////
 

@@ -188,8 +188,8 @@ public class testDataset implements GuardedDataset {
 
         String cacheDir = rs.getDDXCache(rs.getRootPath());
         if (Debug.isSet("probeRequest")) {
-            DTSServlet.log.debug("DDXCache: " + cacheDir);
-            DTSServlet.log.debug("Attempting to open: '" + cacheDir + rs.getDataSet() + "'");
+            DTSServlet.getLogger().debug("DDXCache: " + cacheDir);
+            DTSServlet.getLogger().debug("Attempting to open: '" + cacheDir + rs.getDataSet() + "'");
         }
 
         try {
@@ -238,8 +238,8 @@ public class testDataset implements GuardedDataset {
         String cacheDir = rs.getDDSCache(rs.getRootPath());
 
         if (Debug.isSet("probeRequest")) {
-            DTSServlet.log.debug("DDSCache: " + cacheDir);
-            DTSServlet.log.debug("Attempting to open: '" + cacheDir + rs.getDataSet() + "'");
+            DTSServlet.getLogger().debug("DDSCache: " + cacheDir);
+            DTSServlet.getLogger().debug("Attempting to open: '" + cacheDir + rs.getDataSet() + "'");
         }
 
 
@@ -342,31 +342,31 @@ public class testDataset implements GuardedDataset {
                 // Then parse the DDS
                 if((gotDDS = myDDS.parse(dds_source))) {
                     //myDDS.setBlobURL(rs.getDodsBlobURL());
-                    DTSServlet.log.debug("Got DDS.");
+                    DTSServlet.getLogger().debug("Got DDS.");
                 }
                 try {dds_source.close(); } catch(IOException ioe) {};
 
             }
-            DTSServlet.log.debug("-------------");
+            DTSServlet.getLogger().debug("-------------");
             myDAS = new DAS();
 
             try {
                 is = openCachedDAS(rs);
 
                 if((gotDAS = myDAS.parse(is)))  {
-                    DTSServlet.log.debug("Got DAS");
+                    DTSServlet.getLogger().debug("Got DAS");
                 }
 
                 if (gotDAS && gotDDS) {
-                    DTSServlet.log.debug("-------------");
+                    DTSServlet.getLogger().debug("-------------");
                     myDAS.print(System.out);
-                    DTSServlet.log.debug("-------------");
+                    DTSServlet.getLogger().debug("-------------");
                     myDDS.ingestDAS(myDAS);
-                    DTSServlet.log.debug("DDS ingested DAS.");
+                    DTSServlet.getLogger().debug("DDS ingested DAS.");
                     myDAS = myDDS.getDAS();
-                    DTSServlet.log.debug("-------------");
+                    DTSServlet.getLogger().debug("-------------");
                     myDAS.print(System.out);
-                    DTSServlet.log.debug("-------------");
+                    DTSServlet.getLogger().debug("-------------");
                 }
 
             } catch (FileNotFoundException fnfe) { // Ok, no DAS. It's a bum reference.
@@ -389,15 +389,15 @@ public class testDataset implements GuardedDataset {
 
         if (gotDAS) {
             if (gotDDX)
-                DTSServlet.log.debug("Got DAS from DDX for dataset: " + rs.getDataSet());
+                DTSServlet.getLogger().debug("Got DAS from DDX for dataset: " + rs.getDataSet());
             else if (gotDDS)
-                DTSServlet.log.debug("Got DAS, popped it into a DDS, and got back a complete DAS for dataset: " + rs.getDataSet());
+                DTSServlet.getLogger().debug("Got DAS, popped it into a DDS, and got back a complete DAS for dataset: " + rs.getDataSet());
             else
-                DTSServlet.log.debug("Successfully opened and parsed DAS cache for dataset: " + rs.getDataSet());
+                DTSServlet.getLogger().debug("Successfully opened and parsed DAS cache for dataset: " + rs.getDataSet());
         } else if (gotDDS)
-            DTSServlet.log.debug("No DAS! Got a DDS, and sent a complete (but empty) DAS for dataset: " + rs.getDataSet());
+            DTSServlet.getLogger().debug("No DAS! Got a DDS, and sent a complete (but empty) DAS for dataset: " + rs.getDataSet());
         else
-            DTSServlet.log.debug("No DAS or DDS present for dataset: " + rs.getDataSet());
+            DTSServlet.getLogger().debug("No DAS or DDS present for dataset: " + rs.getDataSet());
 
         return (myDAS);
 
@@ -433,8 +433,8 @@ public class testDataset implements GuardedDataset {
         String cacheDir = rs.getDASCache(rs.getRootPath());
 
         if (Debug.isSet("probeRequest")) {
-            DTSServlet.log.debug("DASCache: " + cacheDir);
-            DTSServlet.log.debug("Attempting to open: '" + cacheDir + rs.getDataSet() + "'");
+            DTSServlet.getLogger().debug("DASCache: " + cacheDir);
+            DTSServlet.getLogger().debug("Attempting to open: '" + cacheDir + rs.getDataSet() + "'");
         }
 
         // go get a file stream that points to the requested DASfile.

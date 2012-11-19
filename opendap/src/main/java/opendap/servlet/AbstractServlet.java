@@ -51,7 +51,7 @@ import opendap.servers.*;
 import opendap.dap.parsers.ParseException;
 import opendap.util.Debug;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import ucar.nc2.util.log.DefaultLogger;
 import ucar.nc2.util.net.EscapeStrings;
 
 /**
@@ -132,15 +132,28 @@ public abstract class AbstractServlet extends javax.servlet.http.HttpServlet {
     //////////////////////////////////////////////////
     // Statics
 
-    // Define an overall logger for everyone to use
-    // Start with a default logger, but allow an application to change it later
-    static public org.slf4j.Logger log
-             = org.slf4j.LoggerFactory.getLogger(AbstractServlet.class);
 
-    static public void setLog(Class cl)
-    {
-        log = org.slf4j.LoggerFactory.getLogger(cl);
-    }
+  static final private Class DEFAULTCLASS 
+	= opendap.servlet.AbstractServlet.class;
+
+  static private org.slf4j.Logger log = null;
+
+  static protected void setLogger(Class cl)
+  {
+	if(cl == null)
+	    cl = DEFAULTCLASS;
+        DefaultLogger.setLogger(cl);
+	log = ucar.nc2.util.log.DefaultLogger.getLogger();
+  }
+
+  static public Logger getLogger()
+  {
+      if(log == null)
+	setLogger(null);
+      return log;
+  }
+
+    //////////////////////////////////////////////////
 
     static public void printDODSException(opendap.dap.DAP2Exception de)
     {

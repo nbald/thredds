@@ -110,8 +110,17 @@ static enum Methods
 }
 
 //////////////////////////////////////////////////////////////////////////
-static public org.slf4j.Logger log
-                = org.slf4j.LoggerFactory.getLogger(HTTPSession.class);
+
+static private org.slf4j.Logger log
+    = ucar.nc2.util.log.DefaultLogger.getLogger();
+
+static public org.slf4j.Logger getLogger()
+{
+    if(log == null)
+        log = ucar.nc2.util.log.DefaultLogger.getLogger();
+    return log;
+}
+
 //////////////////////////////////////////////////////////////////////////
 
 static synchronized public void setGlobalUserAgent(String _userAgent)

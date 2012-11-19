@@ -355,7 +355,6 @@ public class DTSServlet extends AbstractServlet
    public void init() throws ServletException
    {
     super.init();
-    setLog(DTSLog.class);
     log.debug("**************** DTS INIT ***********************");
 
     // debugging
