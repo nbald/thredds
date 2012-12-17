@@ -460,12 +460,18 @@ public class H5header {
           ncGroup.addVariable(v);
 
           if (v.getDataType().isEnum()) {
-            EnumTypedef enumTypedef = ncGroup.findEnumeration(facadeNested.name);
-            if (enumTypedef == null) {
-              enumTypedef = new EnumTypedef(facadeNested.name, facadeNested.dobj.mdt.map);
-              ncGroup.addEnumeration(enumTypedef);
-            }
-            v.setEnumTypedef(enumTypedef);
+              // This code apparently addresses the possibility of an anonymous enum
+              EnumTypedef enumTypedef = v.getEnumTypedef();
+              assert(enumTypedef != null);
+              String ename = enumTypedef.getShortName();
+              if(ename == null || ename.length() == 0) {
+                enumTypedef = ncGroup.findEnumeration(facadeNested.name);
+                if (enumTypedef == null) {
+                    enumTypedef = new EnumTypedef(facadeNested.name, facadeNested.dobj.mdt.map);
+                    ncGroup.addEnumeration(enumTypedef);
+                }
+                v.setEnumTypedef(enumTypedef);
+              }
           }
 
           Vinfo vinfo = (Vinfo) v.getSPobject();
